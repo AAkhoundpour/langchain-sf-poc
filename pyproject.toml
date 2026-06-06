@@ -1,0 +1,14 @@
+[project]
+name = "langchain-sf-poc"
+version = "0.1.0"
+description = "A simple LangChain agent POC with mocked Salesforce MCP-like tools"
+requires-python = ">=3.10"
+dependencies = [
+  "langchain>=1.0.0",
+  "langchain-ollama>=1.0.0",
+  "python-dotenv>=1.0.1",
+  "pydantic>=2.7.0"
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
