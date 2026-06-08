@@ -1,4 +1,6 @@
 from langchain_core.tools import tool
+from langchain_sf_poc.sf_real_service import run_readonly_soql
+
 
 from langchain_sf_poc.sf_mcp_service import (
     search_accounts,
@@ -6,6 +8,16 @@ from langchain_sf_poc.sf_mcp_service import (
     get_open_cases_for_account,
     create_case,
 )
+
+
+@tool
+def run_salesforce_soql(query: str) -> str:
+    """
+    Run a read-only SOQL query against Salesforce.
+    Only SELECT queries are allowed.
+    Use this when the user asks for real Salesforce data.
+    """
+    return run_readonly_soql(query)
 
 
 @tool
@@ -55,4 +67,5 @@ tools = [
     get_salesforce_account,
     get_salesforce_open_cases,
     create_salesforce_case,
+    run_salesforce_soql,
 ]
