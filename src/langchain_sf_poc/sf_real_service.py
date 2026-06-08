@@ -1,6 +1,6 @@
 import os
 import json
-from simple_salesforce import Salesforce
+from simple_salesforce import Salesforce, SalesforceLogin
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -10,10 +10,31 @@ def get_salesforce_client():
     username = (os.getenv("SF_USERNAME") or "").strip()
     password = (os.getenv("SF_PASSWORD") or "").strip()
     security_token = (os.getenv("SF_SECURITY_TOKEN") or "").strip()
+    consumer_key = (os.getenv("SF_CONSUMER_KEY") or "").strip()
+    consumer_secret = (os.getenv("SF_CONSUMER_SECRET") or "").strip()
     domain = (os.getenv("SF_DOMAIN") or "test").strip()
 
     if not username or not password:
         raise ValueError("Missing SF_USERNAME or SF_PASSWORD in environment variables.")
+
+    if bool(consumer_key) != bool(consumer_secret):
+        raise ValueError(
+            "Both SF_CONSUMER_KEY and SF_CONSUMER_SECRET must be set together."
+        )
+
+    if consumer_key and consumer_secret:
+        login_kwargs = {
+            "username": username,
+            "password": password,
+            "domain": domain,
+            "consumer_key": consumer_key,
+            "consumer_secret": consumer_secret,
+        }
+        if security_token:
+            login_kwargs["security_token"] = security_token
+
+        session_id, instance = SalesforceLogin(**login_kwargs)
+        return Salesforce(instance=instance, session_id=session_id)
 
     auth_kwargs = {
         "username": username,
